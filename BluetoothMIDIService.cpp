@@ -33,11 +33,11 @@ const uint8_t midiServiceUuid[] = {
         0xa7, 0x51, 0x6c, 0xe3, 0x4e, 0xc4, 0xc7, 0x00
 };
 
-BluetoothMIDIService::BluetoothMIDIService(BLEDevice *dev): ble(*dev) {
-    timestamp = 0;
-    memset(midiBuffer, 0, sizeof(midiBuffer));
-    firstRead = true;
-
+BluetoothMIDIService::BluetoothMIDIService(BLEDevice &_ble, uint8_t rxBufferSize, uint8_t txBufferSize) {
+firstRead = true;
+    // Initialise our characteristic values.
+    /*memset(midiBuffer, 0, sizeof(midiBuffer));
+    
     GattCharacteristic midiCharacteristic(midiCharacteristicUuid, midiBuffer, 0, sizeof(midiBuffer), 
           GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ
         | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
@@ -49,6 +49,7 @@ BluetoothMIDIService::BluetoothMIDIService(BLEDevice *dev): ble(*dev) {
     GattService midiService(midiServiceUuid, midiChars, sizeof(midiChars) / sizeof(GattCharacteristic *));
 
     ble.addService(midiService);
+   
 
     midiCharacteristicHandle = midiCharacteristic.getValueHandle();
 
@@ -56,6 +57,20 @@ BluetoothMIDIService::BluetoothMIDIService(BLEDevice *dev): ble(*dev) {
     ble.onDisconnection(this, &BluetoothMIDIService::onDisconnection);
 
     tick.start();
+     */
+
+     // Initialise our characteristic values.
+    memset(&txCharacteristicMessage, 0, sizeof(txCharacteristicMessage));
+    
+    // Register the base UUID and create the service.
+    RegisterBaseUUID( midiCharacteristicUuid);
+    CreateService( midiServiceUuid);
+
+    RegisterBaseUUID( char_base_uuid);
+    CreateCharacteristic( mbbs_cIdxMESSAGE, charUUID[ mbbs_cIdxMESSAGE],
+                         (uint8_t *)&txCharacteristicMessage,
+                         sizeof(txCharacteristicMessage), sizeof(txCharacteristicMessage),
+                         microbit_propNOTIFY);
 }
 
 void BluetoothMIDIService::onDataRead(const GattReadCallbackParams* params) 

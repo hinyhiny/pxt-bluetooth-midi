@@ -19,7 +19,9 @@
 #ifndef __BLEMIDI_H__
 #define __BLEMIDI_H__
 
-#include "ble/BLE.h"
+// for V2 - codal
+#include "MicroBitBLEManager.h"
+#include "MicroBitBLEService.h"
 
 /** 
  * A class to communicate a BLE MIDI device
