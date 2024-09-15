@@ -29,9 +29,10 @@
 class BluetoothMIDIService {
 public:
     /**
-     * Constructor
+     * Constructor（共通？）
      */
     BluetoothMIDIService(BLEDevice *device);
+
 
     /**
      * Check if a BLE MIDI device is connected
@@ -40,6 +41,7 @@ public:
      */
     bool connected();
 
+    //以下は多分CODALも同じ？
     void sendMidiMessage(uint8_t data0);
     void sendMidiMessage(uint8_t data0, uint8_t data1);
     void sendMidiMessage(uint8_t data0, uint8_t data1, uint8_t data2);
@@ -52,9 +54,24 @@ private:
     uint8_t midiBuffer[5];
     bool firstRead;
 
+    // Bluetooth stack we're running on.
     BLEDevice &ble;
-    GattAttribute::Handle_t midiCharacteristicHandle;    
-    Timer tick;
+
+    // Handles to access each characteristic when they are held by Soft Device.
+    //GattAttribute::Handle_t midiCharacteristicHandle;    
+    //Timer tick;
+
+    // Data for each characteristic when they are held by Soft Device.
+    MicroBitBLEChar      chars[ mbbs_cIdxCOUNT];
+
+    //以下不要かも？
+    public:
+    
+    int              characteristicCount()          { return mbbs_cIdxCOUNT; };
+    MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
+
+
+
 };
 
 #endif /* __BLEMIDI_H__ */
