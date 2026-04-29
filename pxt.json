@@ -1,16 +1,10 @@
 {
-  "name": "midi-ble",
-  "version": "0.2.0",
-  "description": "Bluetooth MIDI for GarageBand",
-  "license": "MIT",
-  "dependencies": {
-    "core": "*",
-    "bluetooth": "*"
-  },
-  "files": [
-    "README.md",
-    "midi-ble.ts"
-  ],
-  "supportedTargets": ["microbit"],
-  "preferredTarget": "microbit"
+    "name": "bluetooth-midi",
+    "version": "1.0.0",
+    "description": "Bluetooth MIDI extension for GarageBand",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": ["bluetooth-midi.ts"],
+    "supportedTargets": ["microbit"]
 }
