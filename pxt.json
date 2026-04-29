@@ -1,25 +1,16 @@
 {
-    "name": "bluetooth-midi",
-    "version": "2.0.13",
-    "description": "A Bluetooth MIDI service",
-    "license": "MIT",
-    "dependencies": {
-        "core": "*",
-        "bluetooth": "*",
-        "midi": "github:microsoft/pxt-midi#v2.1.11"
-    },
-    "files": [
-        "README.md",
-        "bluetooth.ts",
-        "BluetoothMIDIService.cpp",
-        "BluetoothMIDIService.h",
-        "midi.cpp",
-        "shims.d.ts",
-        "enums.d.ts"
-    ],
-    "testFiles": [
-        "tests.ts"
-    ],
-    "public": true,
-    "installedVersion": "workspace:ba1a3850-63c9-4062-aab8-393d43dccbb2"
+  "name": "midi-ble",
+  "version": "0.2.0",
+  "description": "Bluetooth MIDI for GarageBand",
+  "license": "MIT",
+  "dependencies": {
+    "core": "*",
+    "bluetooth": "*"
+  },
+  "files": [
+    "README.md",
+    "midi-ble.ts"
+  ],
+  "supportedTargets": ["microbit"],
+  "preferredTarget": "microbit"
 }
