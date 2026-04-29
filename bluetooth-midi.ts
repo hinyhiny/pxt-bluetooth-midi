@@ -13,7 +13,6 @@ namespace bluetoothMIDI {
     //% weight=100
     export function init(): void {
         bluetooth.startUartService()
-        // micro:bit V2では自動的にデバイス名が設定されます
         connected = false
     }
 
@@ -23,8 +22,6 @@ namespace bluetoothMIDI {
     //% block="MIDI が接続されている"
     //% weight=90
     export function isConnected(): boolean {
-        // MakeCodeでは接続状態の直接確認は限られています
-        // 接続されているかどうかはデータ送信可否で判断
         return connected
     }
 
@@ -40,7 +37,6 @@ namespace bluetoothMIDI {
     //% channel.min=1 channel.max=16 channel.fieldOptions.precision=0
     //% weight=80
     export function noteOn(note: number, velocity: number, channel: number): void {
-        // MIDI message: 0x9n where n is channel-1, followed by note and velocity
         const status = 0x90 | (channel - 1)
         const buffer = pins.createBuffer(3)
         buffer.setNumber(NumberFormat.UInt8LE, 0, status)
@@ -62,7 +58,6 @@ namespace bluetoothMIDI {
     //% channel.min=1 channel.max=16 channel.fieldOptions.precision=0
     //% weight=70
     export function noteOff(note: number, velocity: number, channel: number): void {
-        // MIDI message: 0x8n where n is channel-1, followed by note and velocity
         const status = 0x80 | (channel - 1)
         const buffer = pins.createBuffer(3)
         buffer.setNumber(NumberFormat.UInt8LE, 0, status)
@@ -84,7 +79,6 @@ namespace bluetoothMIDI {
     //% channel.min=1 channel.max=16 channel.fieldOptions.precision=0
     //% weight=60
     export function controlChange(controller: number, value: number, channel: number): void {
-        // MIDI message: 0xBn where n is channel-1
         const status = 0xB0 | (channel - 1)
         const buffer = pins.createBuffer(3)
         buffer.setNumber(NumberFormat.UInt8LE, 0, status)
@@ -104,7 +98,6 @@ namespace bluetoothMIDI {
     //% channel.min=1 channel.max=16 channel.fieldOptions.precision=0
     //% weight=50
     export function programChange(program: number, channel: number): void {
-        // MIDI message: 0xCn where n is channel-1
         const status = 0xC0 | (channel - 1)
         const buffer = pins.createBuffer(2)
         buffer.setNumber(NumberFormat.UInt8LE, 0, status)
@@ -144,6 +137,34 @@ namespace bluetoothMIDI {
     }
 
     /**
+     * Helper function to remove digits from string
+     */
+    function removeDigits(str: string): string {
+        let result = ""
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charAt(i)
+            if (char < "0" || char > "9") {
+                result = result + char
+            }
+        }
+        return result
+    }
+
+    /**
+     * Helper function to extract digits from string
+     */
+    function extractDigits(str: string): string {
+        let result = ""
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charAt(i)
+            if (char >= "0" && char <= "9") {
+                result = result + char
+            }
+        }
+        return result
+    }
+
+    /**
      * Convert note name to MIDI number
      * @param noteName Note name like "C4", "D#5", etc.
      */
@@ -153,18 +174,16 @@ namespace bluetoothMIDI {
         const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
         let result = 0
         
-        // Parse note name (e.g., "C4", "D#5")
+        // Parse note name (e.g., "C4", "D#5") without using regex
         if (noteName.length >= 2) {
-            let notePart = noteName.replace(/[0-9]/g, '')
-            const octave = parseInt(noteName.replace(/[^0-9]/g, ''))
+            // Extract note part (letters only)
+            let notePart = removeDigits(noteName)
             
-            // Handle sharp/flat notations
-            if (notePart.length > 1) {
-                notePart = notePart.substring(0, 2)
-            } else {
-                notePart = notePart.substring(0, 1)
-            }
+            // Extract octave part (digits only)
+            let octaveStr = extractDigits(noteName)
+            const octave = parseInt(octaveStr)
             
+            // Find note index
             const noteIndex = notes.indexOf(notePart)
             if (noteIndex >= 0 && !isNaN(octave)) {
                 result = (octave + 1) * 12 + noteIndex
