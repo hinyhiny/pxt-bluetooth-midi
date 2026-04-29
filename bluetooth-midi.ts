@@ -158,4 +158,18 @@ namespace bluetoothMIDI {
             let notePart = noteName.replace(/[0-9]/g, '')
             const octave = parseInt(noteName.replace(/[^0-9]/g, ''))
             
-            //
+            // Handle sharp/flat notations
+            if (notePart.length > 1) {
+                notePart = notePart.substring(0, 2)
+            } else {
+                notePart = notePart.substring(0, 1)
+            }
+            
+            const noteIndex = notes.indexOf(notePart)
+            if (noteIndex >= 0 && !isNaN(octave)) {
+                result = (octave + 1) * 12 + noteIndex
+            }
+        }
+        return result
+    }
+}
